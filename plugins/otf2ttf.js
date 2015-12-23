@@ -1,20 +1,22 @@
 /**
- * @file svg2ttf
+ * @file otf2ttf
  * @author junmer
  */
 
 /* eslint-env node */
 
-var isSvg = require('is-svg');
+var isOtf = require('is-otf');
 var through = require('through2');
+var otf2ttfobject = require('fonteditor-core').otf2ttfobject;
 var TTFWriter = require('fonteditor-core').TTFWriter;
-var svg2ttfobject = require('fonteditor-core').svg2ttfobject;
+var b2ab = require('b3b').b2ab;
 var ab2b = require('b3b').ab2b;
 var replaceExt = require('replace-ext');
 var _ = require('lodash');
+var util = require('../lib/util');
 
 /**
- * svg2ttf fontmin plugin
+ * otf2ttf fontmin plugin
  *
  * @param {Object} opts opts
  * @return {Object} stream.Transform instance
@@ -22,7 +24,11 @@ var _ = require('lodash');
  */
 module.exports = function (opts) {
 
-    opts = _.extend({clone: true, hinting: true}, opts);
+    opts = _.extend({clone: false, hinting: true}, opts);
+
+    // prepare subset
+    var subsetText = util.getSubsetText(opts);
+    opts.subset = util.string2unicodes(subsetText);
 
     return through.ctor({
         objectMode: true
@@ -40,8 +46,8 @@ module.exports = function (opts) {
             return;
         }
 
-        // check svg
-        if (!isSvg(file.contents)) {
+        // check otf
+        if (!isOtf(file.contents)) {
             cb(null, file);
             return;
         }
@@ -54,31 +60,29 @@ module.exports = function (opts) {
         // replace ext
         file.path = replaceExt(file.path, '.ttf');
 
+        // ttf info
+        var ttfBuffer;
+        var ttfObj;
 
-        // ttf buffer
-        var output;
-
+        // try otf2ttf
         try {
 
-            var ttfObj = svg2ttfobject(
-                file.contents.toString('utf-8')
-            );
+            ttfObj = otf2ttfobject(b2ab(file.contents), opts);
 
-            output = ab2b(new TTFWriter(opts).write(ttfObj));
+            ttfBuffer = ab2b(new TTFWriter(opts).write(ttfObj));
 
         }
         catch (ex) {
             cb(ex);
         }
 
-        if (output) {
-            file.contents = output;
+        if (ttfBuffer) {
+            file.contents = ttfBuffer;
+            file.ttfObject = ttfObj;
             cb(null, file);
         }
 
     });
 
 };
-
-
 
