@@ -38,25 +38,25 @@
     "b3b": "0.0.1",
     "buffer-to-vinyl": "^1.0.0",
     "concat-stream": "^1.4.6",
-    "fonteditor-core": "^0.0.21",
+    "fonteditor-core": "^0.0.37",
     "get-stdin": "^5.0.1",
     "is-otf": "^0.1.2",
-    "is-svg": "^1.1.1",
+    "is-svg": "^2.1.0",
     "is-ttf": "^0.2.2",
     "lodash": "^4.11.2",
     "meow": "^3.0.0",
     "pako": "^1.0.1",
-    "replace-ext": "0.0.1",
+    "replace-ext": "1.0.0",
     "stream-combiner": "^0.2.1",
-    "through2": "2.0.1",
-    "vinyl-fs": "2.4.3"
+    "through2": "2.0.3",
+    "vinyl-fs": "2.4.4"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.1.2",
     "gulp-clean": "^0.3.1",
     "is-eot": "^1.0.0",
     "is-woff": "^1.0.1",
     "istanbul": "^0.4.3",
-    "mocha": "^2.1.0"
+    "mocha": "^3.5.0"
   }
 }
