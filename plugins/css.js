@@ -20,6 +20,9 @@ var b2a = require('b3b').b2a;
 var tpl = fs.readFileSync(
     path.resolve(__dirname, '../lib/font-face.tpl')
 ).toString('utf-8');
+var tplMobile = fs.readFileSync(
+    path.resolve(__dirname, '../lib/font-face-mobile.tpl')
+).toString('utf-8');
 
 /**
  * renderCss
@@ -27,6 +30,7 @@ var tpl = fs.readFileSync(
  * @type {function}
  */
 var renderCss = _.template(tpl);
+var renderCssMobile = _.template(tplMobile);
 
 
 /**
@@ -190,7 +194,7 @@ module.exports = function (opts) {
 
         // render
         var output = _.attempt(function (data) {
-            return new Buffer(renderCss(data));
+            return new Buffer(data.mobile ? renderCssMobile(data) : renderCss(data));
         }, fontInfo);
 
         if (_.isError(output)) {
